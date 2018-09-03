@@ -19,7 +19,8 @@
 3. I/O
 4. Modes: **PULL/LIVE/HISTORY/backup/restore** + 2 extra
 5. UI/UX
-6. Time estimations 
+6. Specs
+7. Time estimations 
 
 ##
 
@@ -281,6 +282,16 @@ Script call examples:
 # URL_LIST: comma separated list of services
 ```
 
-### 6. Time Estimations
+### 6. Specs
+> *approx. 4 hours*
 
-Time estimation: 24 hours. (Optimistic)
+`Test cases:`
+
+- I/O cases: Testing Input Components/Testing Output Components/File doesn't exists/Reach MAX file size/Overwrite file/Different OS
+- Handling responses: Success/Failed responses. Bad urls. 
+- Modes: PULL/LIVE/HISTORY/backup/restore
+- UI/UX - skipped as not non-priority
+
+### 7. Time Estimations
+
+Time estimation: 28 hours. (Optimistic)
