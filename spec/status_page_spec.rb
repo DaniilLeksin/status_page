@@ -6,3 +6,4 @@ describe '#test_me' do
     expect(StatusPage.start(%w(test_me))).to eq 'Hi! Here is the place for the nice code!'
   end
 end
+
