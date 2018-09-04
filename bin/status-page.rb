@@ -12,12 +12,6 @@ class StatusPage < Thor
   def test_me
     'Hi! Here is the place for the nice code!'
   end
-
-  desc 'open URI method', 'return URI response'
-  def openUri(uri)
-  	r = ResponseHandler.new
-  	p r.openUri(uri)
-  end
 end
 
 StatusPage.start(ARGV)
