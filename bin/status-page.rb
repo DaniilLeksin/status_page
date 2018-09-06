@@ -39,6 +39,12 @@ class StatusPage < Thor
   # 	mode = Modes.new
   # 	mode.pull
   # end
+
+  # desc 'test method', 'a test greeting task'
+  # def live(t, o)
+  # 	mode = Modes.new
+  # 	mode.live(t, o)
+  # end
   
 end
 

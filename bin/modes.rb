@@ -1,8 +1,9 @@
 require_relative 'responseHandler'
 require_relative 'inputOutputHandler'
+require 'fileutils'
 
 class Modes
-  def pull
+  def pull(path=nil)
   	result = ""
   	timestamp = Time.now
   	io = InputOutputHandler.new
@@ -30,10 +31,21 @@ class Modes
   	  service_status_info = [timestamp, service_name, status, last_update, total_time].map { |k| "#{k}" }.join(" | ") + "\n"
   	  result << service_status_info
   	end
-  	io.storeOutputData(result)
+  	io.storeOutputData(result, path)
   end
 
-  def live
+  def live(timeout, output)
+    # PARAM: output should be defined to distinguish periodic responses
+    # PARAM: timeout determines pause after requestion list of services
+    # Make it to start periodically
+    # sleep(timeout) until self.pull(output)
+    exit_requested = false
+    Kernel.trap( "INT" ) { exit_requested = true }
+    while !exit_requested
+      self.pull(output)
+      sleep timeout.to_i
+    end
+    # TODO:Logging
   end
 
   def history
