@@ -20,7 +20,7 @@ class InputOutputHandler
         last_updated: '',
         error_output: '',
   			fill: false,
-  			max_size: 4096
+  			max_size: 1
   		}
   	}
 
@@ -38,9 +38,22 @@ class InputOutputHandler
   end
 
   def storeOutputData(data, path=nil)
-    # TODO: manage to add to last updated file
     configuration_path = path.nil? ? File.join(Dir.pwd, @configuration[:configuration][:output_folder], Time.now.strftime('%s').to_s) : path
+    
+    # Manage MAX file size from configuration file,
+    output_file = File.new(configuration_path, 'a')
+    if ((output_file.size + data.size) / 2**20).round(2) > @configuration[:configuration][:max_size]
+      timestamp = Time.now.strftime('%s').to_s
+      base_name = File.basename(configuration_path)
+      new_path = "copy_#{timestamp}_#{base_name}"
+      # Save full file as a copy with the new name
+      FileUtils.cp(path, new_path)
+      # Clear the file
+      File.truncate(configuration_path, 0)
+    end
+
     output_file = File.new(configuration_path, 'a')
     output_file.puts(data)
+    # TODO: Add logging
   end
 end

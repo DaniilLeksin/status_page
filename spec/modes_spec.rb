@@ -10,4 +10,9 @@ describe '#Modes' do
   	# TODO: add test
   	@modes.pull
   end
+
+  it 'should run LIVE mode' do
+  	# TODO: add test
+  	@modes.pull
+  end
 end
