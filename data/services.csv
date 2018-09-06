@@ -1,2 +1,5 @@
-test_data,test_data,test_data
-test_data2,test_data2,test_data2
+Atlassian Bitbucket,https://bqlf8qjztdtr.statuspage.io/api/v2/status.json,[none=up;minor=minor;major=major;critical=critical],indicator,updated_at
+Cloudflare,https://yh6f0r4529hb.statuspage.io/api/v2/status.json,[none=up;minor=minor;major=major;critical=critical],indicator,updated_at
+RubyGems.org,https://pclby00q90vc.statuspage.io/api/v2/status.json,[none=up;minor=minor;major=major;critical=critical],indicator,updated_at
+GitHub,https://status.github.com/api/status.json,[good=up;minor=minor;major=major],status,last_updated
+Heroku,https://status.heroku.com/api/v3/current-status,[green=up;yellow=yellow;red=red],Production,NONE

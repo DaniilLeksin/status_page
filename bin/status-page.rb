@@ -3,6 +3,7 @@
 require 'thor'
 require_relative 'responseHandler'
 require_relative 'inputOutputHandler'
+require_relative 'modes'
 
 
 class StatusPage < Thor
@@ -31,6 +32,12 @@ class StatusPage < Thor
   # def storeData(data, path=nil)
   # 	io = InputOutputHandler.new
   # 	conf = io.storeOutputData(data, path)
+  # end
+
+  # desc 'test method', 'a test greeting task'
+  # def pull
+  # 	mode = Modes.new
+  # 	mode.pull
   # end
   
 end

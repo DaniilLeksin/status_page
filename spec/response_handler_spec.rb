@@ -38,5 +38,9 @@ describe '#openUri' do
   	expect(rh[:total_time]).not_to be_nil
   	expect(rh[:status]).to match_array(["200", "OK"])
   end
+
+  it 'should parse response with the fields' do
+    # TODO: add test here
+  end
 end
 
