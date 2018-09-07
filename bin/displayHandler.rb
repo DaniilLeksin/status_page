@@ -1,7 +1,7 @@
 class DisplayHandler
   def shortLine(data, status=nil)
     if status.nil?
-  	  p "#{data}"
+      p "#{data}"
     else
       p "[#{status.upcase}] #{data}"
     end
