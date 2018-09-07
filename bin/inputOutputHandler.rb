@@ -46,9 +46,7 @@ class InputOutputHandler
   end
 
   def loadHistory
-
     output_folder = File.join(Dir.pwd, @configuration[:configuration][:output_folder])
-    
     Dir.foreach(output_folder) do |item|
       next if item == '.' or item == '..'
       data = []
