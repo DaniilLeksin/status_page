@@ -1,10 +1,18 @@
 require 'yaml'
 require 'csv'
+require_relative 'displayHandler'
 
 class InputOutputHandler
   def initialize
     raise "No Configuration file" unless File.exist?(File.join(Dir.pwd, 'configuration.yml'))
     @configuration = loadConfigurationData
+    @display = DisplayHandler.new
+    # Create output folder
+    createFolder(File.join(Dir.pwd, @configuration[:configuration][:output_folder]))
+  end
+
+  def createFolder(path)
+    Dir.exist?(path) ? true : Dir.mkdir(path)
   end
 
   def updateConfiguration(configuration)
@@ -35,6 +43,23 @@ class InputOutputHandler
   def loadServiceList(path=nil)
     configuration_path = path.nil? ? File.join(Dir.pwd, @configuration[:configuration][:service_list]) : path
     CSV.read(configuration_path)
+  end
+
+  def loadHistory
+
+    output_folder = File.join(Dir.pwd, @configuration[:configuration][:output_folder])
+    
+    Dir.foreach(output_folder) do |item|
+      next if item == '.' or item == '..'
+      data = []
+      File.open(File.join(output_folder, item)) do |file|
+        @display.shortLine("=Name: #{item}. Size: #{file.size} bytes")
+        file.each_line do |line|
+          data << line.chomp.split(' | ')
+        end
+      end
+      @display.tableView(data, '%-5s %-25s %-25s %-10s %-25s %s', ['#', 'Time Start', 'Name', 'Status', 'Last Update', 'Response Time'])
+    end
   end
 
   def storeOutputData(data, path=nil)

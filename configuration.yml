@@ -1,9 +1,9 @@
 ---
-:timestamp: '1536192904'
+:timestamp: '1536362435'
 :configuration:
   :service_list: data/services.csv
   :output_folder: output/
   :last_updated: ''
   :error_output: ''
   :fill: false
-  :max_size: 4096
+  :max_size: 1

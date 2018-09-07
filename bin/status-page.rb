@@ -34,17 +34,23 @@ class StatusPage < Thor
   # 	conf = io.storeOutputData(data, path)
   # end
 
-  # desc 'test method', 'a test greeting task'
-  # def pull
-  # 	mode = Modes.new
-  # 	mode.pull
-  # end
+  desc 'test method', 'a test greeting task'
+  def pull
+  	mode = Modes.new
+  	mode.pull
+  end
 
   # desc 'test method', 'a test greeting task'
   # def live(t, o)
   # 	mode = Modes.new
   # 	mode.live(t, o)
   # end
+
+  desc 'test method', 'a test greeting task'
+  def history(path=nil)
+  	mode = Modes.new
+  	mode.history
+  end
   
 end
 

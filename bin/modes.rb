@@ -49,6 +49,8 @@ class Modes
   end
 
   def history
+    io = InputOutputHandler.new
+    io.loadHistory
   end
 
   def backup(path=nil)

@@ -15,4 +15,9 @@ describe '#Modes' do
   	# TODO: add test
   	@modes.pull
   end
+
+  it 'should run HISTORY mode' do
+  	# TODO: add test
+  	@modes.history
+  end
 end
