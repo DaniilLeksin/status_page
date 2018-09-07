@@ -45,6 +45,12 @@ class StatusPage < Thor
   # 	mode = Modes.new
   # 	mode.live(t, o)
   # end
+
+  # desc 'test method', 'a test greeting task'
+  # def history(path=nil)
+  # 	mode = Modes.new
+  # 	mode.history
+  # end
   
 end
 

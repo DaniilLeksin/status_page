@@ -41,7 +41,7 @@ class ResponseHandler
     # Convert none=up,minor=minor,major=major to hash {"none"=>"up", "minor"=>"minor", "major"=>"major"}
     rule_hash = Hash[ *rule_arr.collect { |v| [ v.split('=')[0], v.split('=')[1] ] }.flatten ]
 
-    # First two keys must in CSV must be for current_status, last_updated
+    # First two keys in CSV file must be for current_status, last_updated
     status = search_hash(response, keys[0])
     last_update = search_hash(response, keys[1])
     #TODO: pave the way to manage other keys (to think about uniqueness)
