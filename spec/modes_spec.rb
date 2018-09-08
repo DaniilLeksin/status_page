@@ -20,4 +20,9 @@ describe '#Modes' do
   	# TODO: add test
   	@modes.history
   end
+
+   it 'should run Verbose mode' do
+  	# TODO: add test
+  	@modes.verbose
+  end
 end

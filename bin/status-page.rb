@@ -51,6 +51,12 @@ class StatusPage < Thor
   	mode = Modes.new
   	mode.history(path)
   end
+
+  desc 'test method', 'a test greeting task'
+  def backup(path=nil)
+  	mode = Modes.new
+  	mode.backup(path)
+  end
   
 end
 

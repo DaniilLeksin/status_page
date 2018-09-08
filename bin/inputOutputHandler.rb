@@ -12,6 +12,7 @@ class InputOutputHandler
     createFolder(File.join(Dir.pwd, @configuration[:configuration][:output_folder]))
     createFolder(File.join(Dir.pwd, @configuration[:configuration][:history_folder]))
     createFolder(File.join(Dir.pwd, @configuration[:configuration][:trash_folder]))
+    createFolder(File.join(Dir.pwd, @configuration[:configuration][:backup_folder]))
   end
 
   def createFolder(path)
@@ -30,6 +31,7 @@ class InputOutputHandler
   			output_folder: 'output/',
         history_folder: 'output/history/',
         trash_folder: 'output/trash/',
+        backup_folder: 'output/backup/',
         last_updated: '',
         error_output: '',
   			fill: false,
@@ -50,27 +52,31 @@ class InputOutputHandler
     CSV.read(configuration_path)
   end
 
-  def storeHistory(path)
+  def storeHistory(path, out_folder, verbose=true)
     output_folder = File.join(Dir.pwd, @configuration[:configuration][:output_folder])
     Dir.foreach(output_folder) do |item|
       file_name = File.join(output_folder, item)
       next if item == '.' or item == '..' or File.directory?(file_name)
       data = []
       File.open(file_name) do |file|
-        @display.shortLine("=Name: #{item}. Size: #{file.size} bytes")
+        @display.shortLine("=Name: #{item}. Size: #{file.size} bytes", nil, verbose)
         file.each_line do |line|
-          storeOutputData(line, path)
+          storeOutputData(line, path, out_folder)
           data << line.chomp.split(' | ')
         end
       end
       # Move file to trash folder
+      # TODO: put in docs description of the HISTORY flow
       FileUtils.mv(file_name, File.join(Dir.pwd, @configuration[:configuration][:trash_folder], item))
-      @display.tableView(data, '%-5s %-25s %-25s %-10s %-25s %s', ['#', 'Time Start', 'Name', 'Status', 'Last Update', 'Response Time'])
+      @display.tableView(data, '%-5s %-25s %-25s %-10s %-25s %s', ['#', 'Time Start', 'Name', 'Status', 'Last Update', 'Response Time'], verbose)
     end
   end
 
-  def storeOutputData(data, path=nil)
-    configuration_path = path.nil? ? File.join(Dir.pwd, @configuration[:configuration][:output_folder], Time.now.strftime('%s').to_s) : path
+  def backup(path=nil, out_folder)  
+  end
+
+  def storeOutputData(data, path=nil, out_folder)
+    configuration_path = path.nil? ? File.join(Dir.pwd, out_folder, Time.now.strftime('%s').to_s) : path
     
     # Manage MAX file size from configuration file,
     output_file = File.new(configuration_path, 'a')

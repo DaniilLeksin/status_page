@@ -31,7 +31,7 @@ class Modes
   	  service_status_info = [timestamp, service_name, status, last_update, total_time].map { |k| "#{k}" }.join(" | ") + "\n"
   	  result << service_status_info
   	end
-  	io.storeOutputData(result, path)
+  	io.storeOutputData(result, path, configuration[:configuration][:output_folder])
   end
 
   def live(timeout, output)
@@ -48,12 +48,18 @@ class Modes
     # TODO:Logging
   end
 
-  def history(path)
+  def history(path, verbose=true)
     io = InputOutputHandler.new
-    io.storeHistory(path)
+    configuration = io.loadConfigurationData
+    io.storeHistory(path, configuration[:configuration][:history_folder], verbose)
   end
 
-  def backup(path=nil)
+  def backup(path=nil, verbose=true)
+    io = InputOutputHandler.new
+    configuration = io.loadConfigurationData
+    # verbose false: no need to display output
+    io.storeHistory(path, configuration[:configuration][:history_folder], false)
+    # io.backup(path, configuration[:configuration][:backup_folder])
   end
 
   def restore(path=nil)
