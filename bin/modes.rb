@@ -48,9 +48,9 @@ class Modes
     # TODO:Logging
   end
 
-  def history
+  def history(path)
     io = InputOutputHandler.new
-    io.loadHistory
+    io.storeHistory(path)
   end
 
   def backup(path=nil)

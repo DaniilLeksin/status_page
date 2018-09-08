@@ -1,5 +1,6 @@
 require 'yaml'
 require 'csv'
+require 'fileutils'
 require_relative 'displayHandler'
 
 class InputOutputHandler
@@ -7,8 +8,10 @@ class InputOutputHandler
     raise "No Configuration file" unless File.exist?(File.join(Dir.pwd, 'configuration.yml'))
     @configuration = loadConfigurationData
     @display = DisplayHandler.new
-    # Create output folder
+    # Create output folders
     createFolder(File.join(Dir.pwd, @configuration[:configuration][:output_folder]))
+    createFolder(File.join(Dir.pwd, @configuration[:configuration][:history_folder]))
+    createFolder(File.join(Dir.pwd, @configuration[:configuration][:trash_folder]))
   end
 
   def createFolder(path)
@@ -25,6 +28,8 @@ class InputOutputHandler
   		configuration: {
   			service_list: 'data/services.csv',
   			output_folder: 'output/',
+        history_folder: 'output/history/',
+        trash_folder: 'output/trash/',
         last_updated: '',
         error_output: '',
   			fill: false,
@@ -45,17 +50,21 @@ class InputOutputHandler
     CSV.read(configuration_path)
   end
 
-  def loadHistory
+  def storeHistory(path)
     output_folder = File.join(Dir.pwd, @configuration[:configuration][:output_folder])
     Dir.foreach(output_folder) do |item|
-      next if item == '.' or item == '..'
+      file_name = File.join(output_folder, item)
+      next if item == '.' or item == '..' or File.directory?(file_name)
       data = []
-      File.open(File.join(output_folder, item)) do |file|
+      File.open(file_name) do |file|
         @display.shortLine("=Name: #{item}. Size: #{file.size} bytes")
         file.each_line do |line|
+          storeOutputData(line, path)
           data << line.chomp.split(' | ')
         end
       end
+      # Move file to trash folder
+      FileUtils.mv(file_name, File.join(Dir.pwd, @configuration[:configuration][:trash_folder], item))
       @display.tableView(data, '%-5s %-25s %-25s %-10s %-25s %s', ['#', 'Time Start', 'Name', 'Status', 'Last Update', 'Response Time'])
     end
   end
