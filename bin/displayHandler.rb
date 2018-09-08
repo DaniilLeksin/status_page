@@ -11,7 +11,7 @@ class DisplayHandler
     format = indents
     puts format % header
     data.each_with_index do |member, i|
-      puts format % [ i+1, member[0], member[1], member[2], member[3], member[4] ]
+      puts format % [ i + 1, member[0], member[1], member[2], member[3], member[4] ] # TODO: convert format to universal form
     end
   end
 end
