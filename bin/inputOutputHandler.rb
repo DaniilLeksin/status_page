@@ -6,7 +6,6 @@ require_relative 'displayHandler'
 class InputOutputHandler
   def initialize
     @display = DisplayHandler.new
-    # raise "No Configuration file!!" unless File.exist?(File.join(Dir.pwd, 'configuration.yml'))
     @configuration = loadConfigurationData
     
     # Create output folders structure:
@@ -42,9 +41,9 @@ class InputOutputHandler
         history_folder: 'output/history/',
         trash_folder: 'output/trash/',
         backup_folder: 'output/backup/', # set FFU
-        last_updated: '',
-        error_output: '',
-  			fill: false,
+        last_updated: '', # set FFU
+        error_output: '', # set FFU
+  			fill: false, # set FFU
   			max_size: 1
   		}
   	}
