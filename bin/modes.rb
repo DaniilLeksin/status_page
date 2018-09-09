@@ -45,7 +45,6 @@ class Modes
     exit_requested = false
     Kernel.trap( "INT" ) { exit_requested = true }
     while !exit_requested
-      p 'tick'
       self.pull(output)
       sleep timeout.to_i
     end
