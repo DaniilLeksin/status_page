@@ -8,11 +8,17 @@ class InputOutputHandler
     raise "No Configuration file" unless File.exist?(File.join(Dir.pwd, 'configuration.yml'))
     @configuration = loadConfigurationData
     @display = DisplayHandler.new
-    # Create output folders
+    # Create output folders structure:
+    # ..
+    # - output/
+    #     -- history/
+    #     -- trash/
+    # ..
     createFolder(File.join(Dir.pwd, @configuration[:configuration][:output_folder]))
     createFolder(File.join(Dir.pwd, @configuration[:configuration][:history_folder]))
     createFolder(File.join(Dir.pwd, @configuration[:configuration][:trash_folder]))
-    createFolder(File.join(Dir.pwd, @configuration[:configuration][:backup_folder]))
+    # commented for beckup task
+    # createFolder(File.join(Dir.pwd, @configuration[:configuration][:backup_folder]))
   end
 
   def createFolder(path)
@@ -31,7 +37,7 @@ class InputOutputHandler
   			output_folder: 'output/',
         history_folder: 'output/history/',
         trash_folder: 'output/trash/',
-        backup_folder: 'output/backup/',
+        backup_folder: 'output/backup/', # set FFU
         last_updated: '',
         error_output: '',
   			fill: false,
@@ -52,8 +58,9 @@ class InputOutputHandler
     CSV.read(configuration_path)
   end
 
-  def storeHistory(path, out_folder, verbose=true)
+  def storeHistory(path, verbose=true)
     output_folder = File.join(Dir.pwd, @configuration[:configuration][:output_folder])
+    out_folder = @configuration[:configuration][:history_folder]
     Dir.foreach(output_folder) do |item|
       file_name = File.join(output_folder, item)
       next if item == '.' or item == '..' or File.directory?(file_name)
@@ -72,7 +79,24 @@ class InputOutputHandler
     end
   end
 
-  def backup(path=nil, out_folder)  
+  # TODO: this method is not implemented
+  # Case: to use `storeDirectory` for store History,
+  # because it has the same logic
+  # Set it here FFU
+  def storeDirectory(path, verbose, backup)
+    history_path = File.join(Dir.pwd, @configuration[:configuration][:history_folder])
+    backup_folder = @configuration[:configuration][:backup_folder]
+    Dir.foreach(history_path) do |item|
+      file_name = File.join(history_path, item)
+      next if item == '.' or item == '..' or File.directory?(file_name)
+      data = File.read(file_name)
+      # TODO: Add sperator logic
+      # TODO: comment while call it twice
+      storeOutputData(data, path, backup_folder)
+      # Clear history
+      FileUtils.rm(file_name)
+      # TODO: logging
+    end
   end
 
   def storeOutputData(data, path=nil, out_folder)

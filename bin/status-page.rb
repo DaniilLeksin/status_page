@@ -40,14 +40,14 @@ class StatusPage < Thor
   	mode.pull
   end
 
-  # desc 'test method', 'a test greeting task'
-  # def live(t, o)
-  # 	mode = Modes.new
-  # 	mode.live(t, o)
-  # end
+  desc 'test method', 'a test greeting task'
+  def live(t=1, o=nil)
+  	mode = Modes.new
+  	mode.live(t, o)
+  end
 
   desc 'test method', 'a test greeting task'
-  def history(path=nil)
+  def history(path=nil, verbose=true)
   	mode = Modes.new
   	mode.history(path)
   end
@@ -55,7 +55,7 @@ class StatusPage < Thor
   desc 'test method', 'a test greeting task'
   def backup(path=nil)
   	mode = Modes.new
-  	mode.backup(path)
+  	mode.backup(path, false)
   end
   
 end
