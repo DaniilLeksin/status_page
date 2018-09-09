@@ -8,10 +8,17 @@ class InputOutputHandler
     raise "No Configuration file" unless File.exist?(File.join(Dir.pwd, 'configuration.yml'))
     @configuration = loadConfigurationData
     @display = DisplayHandler.new
-    # Create output folders
+    # Create output folders structure:
+    # ..
+    # - output/
+    #     -- history/
+    #     -- trash/
+    # ..
     createFolder(File.join(Dir.pwd, @configuration[:configuration][:output_folder]))
     createFolder(File.join(Dir.pwd, @configuration[:configuration][:history_folder]))
     createFolder(File.join(Dir.pwd, @configuration[:configuration][:trash_folder]))
+    # commented for beckup task
+    # createFolder(File.join(Dir.pwd, @configuration[:configuration][:backup_folder]))
   end
 
   def createFolder(path)
@@ -30,6 +37,7 @@ class InputOutputHandler
   			output_folder: 'output/',
         history_folder: 'output/history/',
         trash_folder: 'output/trash/',
+        backup_folder: 'output/backup/', # set FFU
         last_updated: '',
         error_output: '',
   			fill: false,
@@ -50,27 +58,49 @@ class InputOutputHandler
     CSV.read(configuration_path)
   end
 
-  def storeHistory(path)
+  def storeHistory(path, verbose=true)
     output_folder = File.join(Dir.pwd, @configuration[:configuration][:output_folder])
+    out_folder = @configuration[:configuration][:history_folder]
     Dir.foreach(output_folder) do |item|
       file_name = File.join(output_folder, item)
       next if item == '.' or item == '..' or File.directory?(file_name)
       data = []
       File.open(file_name) do |file|
-        @display.shortLine("=Name: #{item}. Size: #{file.size} bytes")
+        @display.shortLine("=Name: #{item}. Size: #{file.size} bytes", nil, verbose)
         file.each_line do |line|
-          storeOutputData(line, path)
+          storeOutputData(line, path, out_folder)
           data << line.chomp.split(' | ')
         end
       end
       # Move file to trash folder
+      # TODO: put in docs description of the HISTORY flow
       FileUtils.mv(file_name, File.join(Dir.pwd, @configuration[:configuration][:trash_folder], item))
-      @display.tableView(data, '%-5s %-25s %-25s %-10s %-25s %s', ['#', 'Time Start', 'Name', 'Status', 'Last Update', 'Response Time'])
+      @display.tableView(data, '%-5s %-25s %-25s %-10s %-25s %s', ['#', 'Time Start', 'Name', 'Status', 'Last Update', 'Response Time'], verbose)
     end
   end
 
-  def storeOutputData(data, path=nil)
-    configuration_path = path.nil? ? File.join(Dir.pwd, @configuration[:configuration][:output_folder], Time.now.strftime('%s').to_s) : path
+  # TODO: this method is not implemented
+  # Case: to use `storeDirectory` for store History,
+  # because it has the same logic
+  # Set it here FFU
+  def storeDirectory(path, verbose, backup)
+    history_path = File.join(Dir.pwd, @configuration[:configuration][:history_folder])
+    backup_folder = @configuration[:configuration][:backup_folder]
+    Dir.foreach(history_path) do |item|
+      file_name = File.join(history_path, item)
+      next if item == '.' or item == '..' or File.directory?(file_name)
+      data = File.read(file_name)
+      # TODO: Add sperator logic
+      # TODO: comment while call it twice
+      storeOutputData(data, path, backup_folder)
+      # Clear history
+      FileUtils.rm(file_name)
+      # TODO: logging
+    end
+  end
+
+  def storeOutputData(data, path=nil, out_folder)
+    configuration_path = path.nil? ? File.join(Dir.pwd, out_folder, Time.now.strftime('%s').to_s) : path
     
     # Manage MAX file size from configuration file,
     output_file = File.new(configuration_path, 'a')
