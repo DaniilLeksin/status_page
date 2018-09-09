@@ -37,22 +37,23 @@ class Modes
   	  result << service_status_info
   	end
   	@io.storeOutputData(result, path, @configuration[:configuration][:output_folder])
+    @display.shortLine("#{Time.now.strftime('%s').to_s}: Data saved!", "DONE")
   end
 
   def live(timeout, output)
     exit_requested = false
     Kernel.trap( "INT" ) { exit_requested = true }
     while !exit_requested
-      @display.shortLine("#{Time.now.strftime('%s').to_s}: Request sent", "LOGGING")
+      @display.shortLine("#{Time.now.strftime('%s').to_s}: Request sent", "DONE")
       self.pull(output)
-      @display.shortLine("#{Time.now.strftime('%s').to_s}: Data saved! Sleep for #{timeout} sec.", "LOGGING")
+      @display.shortLine("#{Time.now.strftime('%s').to_s}: Data saved! Sleep for #{timeout} sec.", "DONE")
       sleep timeout.to_i
     end
   end
 
   def history(path, verbose)
     @io.storeHistory(path, verbose)
-    @display.shortLine("#{Time.now.strftime('%s').to_s}: History merged.", "LOGGING")
+    @display.shortLine("#{Time.now.strftime('%s').to_s}: History merged.", "DONE")
   end
 
   def backup(path, verbose)

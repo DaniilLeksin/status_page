@@ -2,12 +2,14 @@ require 'yaml'
 require 'csv'
 require 'fileutils'
 require_relative 'displayHandler'
+require_relative 'errorsHandler'
 
 class InputOutputHandler
   def initialize
-    raise "No Configuration file" unless File.exist?(File.join(Dir.pwd, 'configuration.yml'))
-    @configuration = loadConfigurationData
     @display = DisplayHandler.new
+    # raise "No Configuration file!!" unless File.exist?(File.join(Dir.pwd, 'configuration.yml'))
+    @configuration = loadConfigurationData
+    
     # Create output folders structure:
     # ..
     # - output/
@@ -19,6 +21,9 @@ class InputOutputHandler
     createFolder(File.join(Dir.pwd, @configuration[:configuration][:trash_folder]))
     # commented for beckup task
     # createFolder(File.join(Dir.pwd, @configuration[:configuration][:backup_folder]))
+  rescue => error 
+    @display.shortLine("#{error.class}. Message: #{error.message}", "ERROR")
+    exit
   end
 
   def createFolder(path)
@@ -76,6 +81,9 @@ class InputOutputHandler
       FileUtils.mv(file_name, File.join(Dir.pwd, @configuration[:configuration][:trash_folder], item))
       @display.tableView(data, '%-5s %-25s %-25s %-10s %-25s %s', ['#', 'Time Start', 'Name', 'Status', 'Last Update', 'Response Time'], verbose)
     end
+  rescue => error 
+    @display.shortLine("#{error.class}. Message: #{error.message}", "ERROR")
+    exit
   end
 
   # TODO: this method is not implemented
@@ -113,5 +121,8 @@ class InputOutputHandler
     end
     output_file = File.new(configuration_path, 'a')
     output_file.puts(data)
+  rescue => error
+    @display.shortLine("#{error.class}. Message: #{error.message}", "ERROR")
+    exit
   end
 end
