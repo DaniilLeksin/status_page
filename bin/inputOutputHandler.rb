@@ -58,7 +58,7 @@ class InputOutputHandler
     CSV.read(configuration_path)
   end
 
-  def storeHistory(path, verbose=true)
+  def storeHistory(path, verbose)
     output_folder = File.join(Dir.pwd, @configuration[:configuration][:output_folder])
     out_folder = @configuration[:configuration][:history_folder]
     Dir.foreach(output_folder) do |item|
@@ -73,7 +73,6 @@ class InputOutputHandler
         end
       end
       # Move file to trash folder
-      # TODO: put in docs description of the HISTORY flow
       FileUtils.mv(file_name, File.join(Dir.pwd, @configuration[:configuration][:trash_folder], item))
       @display.tableView(data, '%-5s %-25s %-25s %-10s %-25s %s', ['#', 'Time Start', 'Name', 'Status', 'Last Update', 'Response Time'], verbose)
     end
@@ -99,9 +98,8 @@ class InputOutputHandler
     end
   end
 
-  def storeOutputData(data, path=nil, out_folder)
+  def storeOutputData(data, path, out_folder)
     configuration_path = path.nil? ? File.join(Dir.pwd, out_folder, Time.now.strftime('%s').to_s) : path
-    
     # Manage MAX file size from configuration file,
     output_file = File.new(configuration_path, 'a')
     if ((output_file.size + data.size) / 2**20).round(2) > @configuration[:configuration][:max_size]
@@ -113,9 +111,7 @@ class InputOutputHandler
       # Clear the file
       File.truncate(configuration_path, 0)
     end
-
     output_file = File.new(configuration_path, 'a')
     output_file.puts(data)
-    # TODO: Add logging
   end
 end

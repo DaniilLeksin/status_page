@@ -1,11 +1,13 @@
 require_relative 'responseHandler'
 require_relative 'inputOutputHandler'
+require_relative 'displayHandler'
 require 'fileutils'
 
 class Modes
   def initialize
     @io = InputOutputHandler.new
     @response_handler = ResponseHandler.new
+    @display = DisplayHandler.new
     @configuration = @io.loadConfigurationData
   end
 
@@ -15,7 +17,6 @@ class Modes
     # Rules: condition to replace not standart status key to a single (You can specify any)
     # Ex. Status UP is 'none' in bitbacket, green' in github
     # Keys: hash keys in service response where status/updated_at values are.
-
     result = ""
   	timestamp = Time.now
   	services_arr = @io.loadServiceList
@@ -39,33 +40,26 @@ class Modes
   end
 
   def live(timeout, output)
-    # PARAM: output should be defined to distinguish periodic responses
-    # PARAM: timeout determines pause after requestion list of services
-    # Make it to start periodically
     exit_requested = false
     Kernel.trap( "INT" ) { exit_requested = true }
     while !exit_requested
+      @display.shortLine("#{Time.now.strftime('%s').to_s}: Request sent", "LOGGING")
       self.pull(output)
+      @display.shortLine("#{Time.now.strftime('%s').to_s}: Data saved! Sleep for #{timeout} sec.", "LOGGING")
       sleep timeout.to_i
     end
-    # TODO:Logging
   end
 
-  def history(path, verbose=true)
-    # TODO: add docs
+  def history(path, verbose)
     @io.storeHistory(path, verbose)
-    # TODO: add logging
+    @display.shortLine("#{Time.now.strftime('%s').to_s}: History merged.", "LOGGING")
   end
 
-  def backup(path=nil, verbose=false)
-    # TODO: add docs
-    # io = InputOutputHandler.new
-    # configuration = @io.loadConfigurationData
-    # verbose false: no need to display output
+  def backup(path, verbose)
     # @io.storeHistory(path, @configuration[:configuration][:history_folder], false)
     # @io.storeDirectory(path, verbose, true)
   end
 
-  def restore(path=nil)
+  def restore(path)
   end
 end
