@@ -2,7 +2,6 @@ require 'yaml'
 require 'csv'
 require 'fileutils'
 require_relative 'displayHandler'
-require_relative 'errorsHandler'
 
 class InputOutputHandler
   def initialize
