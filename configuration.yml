@@ -1,0 +1,12 @@
+---
+:timestamp: '1536536645'
+:configuration:
+  :service_list: data/services.csv
+  :output_folder: output/
+  :history_folder: output/history/
+  :trash_folder: output/trash/
+  :backup_folder: output/backup/
+  :last_updated: ''
+  :error_output: ''
+  :fill: false
+  :max_size: 1

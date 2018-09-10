@@ -206,7 +206,7 @@ begin
     # 1. load PATHS to input data. (I/O)
     if CONF_FILE exists? THEN loadConfigurationData();
     # 2. load file history (I/O)
-    loadHistory();
+    storeHistory();
 rescue
     types_of_exceptions;
 end;
