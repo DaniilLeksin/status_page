@@ -7,7 +7,7 @@ require_relative 'modes'
 
 
 class StatusPage < Thor
-  desc "pull [PATH]", "Request Services and save response into file."
+  desc 'pull [PATH]', 'Request Services and save response into file.'
   long_desc <<-LONGDESC
     \x5`status_page pull` will request services from the list and save result to file.
     You can optionally specify parameter [PATH], which will set the file to save results.
@@ -18,13 +18,13 @@ class StatusPage < Thor
   LONGDESC
   method_option :path, type: :string,
                        default: nil,
-                       desc: "Save result in the specified file."
+                       desc: 'Save result in the specified file.'
   def pull
-  	mode = Modes.new
-  	mode.pull(options[:path])
+    mode = Modes.new
+    mode.pull(options[:path])
   end
 
-  desc "live [TIMEOUT][PATH]", "Non Stop periodically Request Services"
+  desc 'live [TIMEOUT][PATH]', 'Non Stop periodically Request Services'
   long_desc <<-LONGDESC
     \x5`status_page live` will periodically requests services from the list and save results
     into the files (every request generates separate file with response). You can optionally
@@ -37,14 +37,14 @@ class StatusPage < Thor
     \n\n
   LONGDESC
   method_option :timeout, type: :numeric,
-                       default: 1,
-                       desc: "Set timeout between the requests (in seconds)."
+                          default: 1,
+                          desc: 'Set timeout between the requests (in seconds).'
   method_option :path, type: :string,
                        default: nil,
-                       desc: "Save result in the specified file."
+                       desc: 'Save result in the specified file.'
   def live
-  	mode = Modes.new
-  	mode.live(options[:timeout], options[:path])
+    mode = Modes.new
+    mode.live(options[:timeout], options[:path])
   end
 
   desc 'history [PATH] [VERBOSE]', 'Display all data'
@@ -61,23 +61,23 @@ class StatusPage < Thor
   LONGDESC
   method_option :path, type: :string,
                        default: nil,
-                       desc: "Save result in the specified file."
+                       desc: 'Save result in the specified file.'
   method_option :verbose, type: :boolean,
-                       default: true,
-                       desc: "Set verbose mode."  
+                          default: true,
+                          desc: 'Set verbose mode.'  
   def history
-  	mode = Modes.new
-  	mode.history(options[:path], options[:verbose])
+    mode = Modes.new
+    mode.history(options[:path], options[:verbose])
   end
 
   desc 'backup <path>', '[STUB:IN_PROGRESS]Merge History into one file'
   def backup
-  	p '[STUB:IN_PROGRESS]Merge History into one file'
+    p '[STUB:IN_PROGRESS]Merge History into one file'
   end
-  
+
   desc 'restore <path>', '[STUB:IN_PROGRESS]Restore backup file'
   def restore
-  	p '[STUB:IN_PROGRESS]Restore backup file'
+    p '[STUB:IN_PROGRESS]Restore backup file'
   end
 end
 

@@ -19,10 +19,10 @@ class ResponseHandler
     rescue OpenURI::HTTPError => error
       status = error.io.status
     rescue SocketError => error
-      # TODO: manage Errors
+      @display.shortLine("#{error.class}. Message: #{error.message}", 'ERROR')
       status = ["443", "Bad URI"]
     end
-    result = {:data => response, :status => status, :total_time => time ? time.total.round(2) : nil}
+    result = {data: response, status: status, total_time: time ? time.total.round(2) : nil}
   end
 
   def search_hash(hash, key)
