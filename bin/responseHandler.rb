@@ -16,10 +16,10 @@ class ResponseHandler
       end
       status = buffer.status
       response = JSON.parse(buffer.read)
+    # Manage Errors
     rescue OpenURI::HTTPError => error
       status = error.io.status
     rescue SocketError => error
-      @display.shortLine("#{error.class}. Message: #{error.message}", 'ERROR')
       status = ["443", "Bad URI"]
     end
     result = {data: response, status: status, total_time: time ? time.total.round(2) : nil}
