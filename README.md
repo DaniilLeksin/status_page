@@ -13,7 +13,7 @@
 
 
 ### Action List:
-
+0. Implementation (UPDATED)
 1. Preparations
 2. Handling responses
 3. I/O
@@ -21,6 +21,205 @@
 5. UI/UX
 6. Specs
 7. Time estimations 
+
+##
+
+### 0. Implementation
+
+- **0.1 Bundles:** to install required gems run
+
+`bundle install`
+
+- **0.2 Script commands:** to show the script commands, run:
+
+`./bin/status-page.rb help`
+
+```
+Commands:
+  status-page.rb backup <path>             # [STUB:IN_PROGRESS]Merge History into one file
+  status-page.rb help [COMMAND]            # Describe available commands or one specific command
+  status-page.rb history [PATH] [VERBOSE]  # Display all data
+  status-page.rb live [TIMEOUT][PATH]      # Non Stop periodically Request Services
+  status-page.rb pull [PATH]               # Request Services and save response into file.
+  status-page.rb restore <path>            # [STUB:IN_PROGRESS]Restore backup file
+```
+
+-- **PULL mode usage:** `./bin/status-page.rb help pull`:
+
+```
+Usage:
+  status-page.rb pull [PATH]
+
+Options:
+  [--path=PATH]  # Save result in the specified file.
+
+Description:
+  
+  `status_page pull` will request services from the list and save result to file. You can optionally specify parameter [PATH], which will set the file to save results. If [PATH] is NOT specified, the 
+  `status_page` script will automatically creates the output folder (the path to output folder is defined in configuration file) and store response data into it. The script uses Unix Time Timestamp as 
+  a name of the files.
+```
+
+-- **LIVE mode usage:** `./bin/status-page.rb help live`:
+
+```
+Usage:
+  status-page.rb live [TIMEOUT][PATH]
+
+Options:
+  [--timeout=N]  # Set timeout between the requests (in seconds).
+                 # Default: 1
+  [--path=PATH]  # Save result in the specified file.
+
+Description:
+  
+  `status_page live` will periodically requests services from the list and save results into the files (every request generates separate file with response). You can optionally specify parameter 
+  [TIMEOUT], which will set timeout before the requests. By DEFAULT [TIMEOUT] parameter is set to 1 second. Parameter [PATH] specifies the file to save responses. If [PATH] is specified all response 
+  data will be saved into this file. If this parameter is NOT specified, the script automatically saves results into the file in output folder (the path to output folder is defined in configuration 
+  file). !!!===To STOP the process please use `Ctrl+c`==!!! It will safely mange last response and exit.
+```
+**IMPORTANT NOTE** To STOP the process please use `Ctrl+c`
+
+-- **HISTORY mode usage:** `./bin/status-page.rb help history`:
+
+```
+Usage:
+  status-page.rb history [PATH] [VERBOSE]
+
+Options:
+  [--path=PATH]                # Save result in the specified file.
+  [--verbose], [--no-verbose]  # Set verbose mode.
+                               # Default: true
+
+Description:
+  
+  `status_page history` will merge all response data collected in output_folder (path to output folder is defined in configuration file) into one history file (path to history folder is defined in 
+  configuration file). If [PATH] parameter is specified merged data will be stored in this file. Parameter [VERBOSE] defines the output merged data into user terminal. It accepts to values: 
+  `--verbose`/`--no-verbose`. If set `--verbose` key, history files will be shown in terminal and vice versa, if `--no-verbose` key is set, display output is disabled. By DEFAULT [VERBOSE] is set to 
+  `--verbose`. All data will be displayed. All collected response files will be moved into the trash_folder (the path to trash folder is defined in configuration file).
+```
+
+-- **BACKUP/RESTORE modes usage** Not implemented. Stubbed.
+```
+[STUB:IN_PROGRESS]Restore backup file
+[STUB:IN_PROGRESS]Merge History into one file
+```
+
+- **0.3 Tests:** To run specs:
+
+`rake rspec`
+Not all tests are implemented.
+
+- **0.4 Input data:**
+
+**CONFIGURATION file:** is a file to store configuration values/parameters. Configuration file is a YAML file with the name `configuration.yml`. It is stored in project root directory.
+
+```
+---
+:timestamp: '1536565255'
+:configuration:
+  :service_list: data/services.csv
+  :output_folder: output/
+  :history_folder: output/history/
+  :trash_folder: output/trash/
+  :backup_folder: output/backup/
+  :last_updated: ''
+  :error_output: ''
+  :fill: false
+  :max_size: 1
+```
+*Descriptions:*
+
+- `timestamp`: timestamp of the last update in the configuration file
+- `service_list`: path to service.csv file with list of services to check
+- `output_folder`: path to all result directories/files
+- `history_folder`: path to store file for `HISTORY` mode
+- `trash_folder`: path to store already processed files
+- `backup_folder`: FFU
+- `last_updated`: FFU
+- `error_output`: FFU
+- `fill`: FFU
+- `max_size`: Max size of any output file in MB.
+
+**SERVICE LIST FILE:**
+All service data is stored as `CSV` file.
+
+```
+Atlassian Bitbucket,https://bqlf8qjztdtr.statuspage.io/api/v2/status.json,[none=up;minor=minor;major=major;critical=critical],indicator,updated_at
+Cloudflare,https://yh6f0r4529hb.statuspage.io/api/v2/status.json,[none=up;minor=minor;major=major;critical=critical],indicator,updated_at
+RubyGems.org,https://pclby00q90vc.statuspage.io/api/v2/status.json,[none=up;minor=minor;major=major;critical=critical],indicator,updated_at
+GitHub,https://status.github.com/api/status.json,[good=up;minor=minor;major=major],status,last_updated
+Heroku,https://status.heroku.com/api/v3/current-status,[green=up;yellow=yellow;red=red],Production,NONE
+```
+
+`services.csv` is flexible, you can modify options.
+
+*Example:*
+`Atlassian Bitbucket,https://bqlf8qjztdtr.statuspage.io/api/v2/status.json [none=up;minor=minor;major=major;critical=critical],indicator,updated_at`
+
+*File structure:*
+`|Service Name|API_ENDPOINT|RULES|KEYS|`
+
+- `Service Name`: service file name
+- `API_ENDPOINT`: Endpoint to request statis API
+- `RULES`: (flexible). Service can provide different different status messages (e.g. NONE/GREEN/GOOD). To result in one way, you can specified the rule to change response values.
+
+*Rule Example:*
+```
+[none=up;minor=minor;major=major;critical=critical]
+```
+ - means, that if service responses with `status=None`, the RULE will transform it to `UP`
+
+Therefore it is a flexible way to collect statuses `the things in style`.
+
+- `Last values` - values after the RULE - is strings with key names from the service response.
+
+**Example:** Github status responses with:
+```json
+{
+  "status": "good",
+  "last_updated": "2012-12-07T18:11:55Z"
+}
+```
+
+**Keys:** `status,last_updated`
+
+**Example:** RubyGems status responses with:
+
+```json
+{
+  "page":{
+    "id":"pclby00q90vc",
+    "name":"RubyGems.org",
+    "url":"https://status.rubygems.org",
+    "updated_at": "2018-08-29T09:39:08Z"
+  },
+  "status": {
+    "description": "Partial System Outage",
+    "indicator": "major"
+  }
+}
+```
+**Keys:** `indicator,updated_at`
+
+**Example:** Heroky status responses with:
+
+```json
+{
+	"status":{
+    	"Production":"green",
+        "Development":"green"
+    },
+    "issues":[]
+}
+```
+
+**Keys:** `Development,None`
+
+**IMPORTANT_NOTE:** First `TWO` keys have to be `STATUS`,`UPDATED_AT` values. If response doesn't provide any of them fill the string with `NONE`.
+
+**IMPORTANT_NOTE**: Algorithm is serarching for key in `KEYS` recursively, no NEED to set full keymap (eg. `page.indicator`)
+
 
 ##
 
